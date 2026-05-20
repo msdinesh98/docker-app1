@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OceanBites | Food Delivery</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --ocean-blue: #006994;
+            --light-blue: #e6f4f1;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --gray: #f4f4f4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--gray);
+            color: var(--text-dark);
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: var(--ocean-blue);
+            color: var(--white);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .cart-btn {
+            background-color: var(--white);
+            color: var(--ocean-blue);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cart-btn:hover {
+            background-color: var(--light-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--white);
+            text-align: center;
+            padding: 4rem 2rem;
+            border-bottom: 4px solid var(--ocean-blue);
+        }
+
+        .hero h1 {
+            color: var(--ocean-blue);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        /* Menu Section */
+        .menu-container {
+            padding: 3rem 5%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .menu-title {
+            text-align: center;
+            color: var(--ocean-blue);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Food Cards */
+        .card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,105,148,0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--ocean-blue);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--ocean-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .card-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart {
+            background-color: var(--ocean-blue);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .add-to-cart:hover {
+            background-color: #004d6e;
+        }
+
+        /* Shopping Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background-color: var(--white);
+            box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            background-color: var(--ocean-blue);
+            color: var(--white);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            padding: 1.5rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-footer {
+            padding: 1.5rem;
+            background-color: var(--light-blue);
+            border-top: 2px solid var(--ocean-blue);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .checkout-btn {
+            background-color: var(--ocean-blue);
+            color: var(--white);
+            border: none;
+            padding: 1rem;
+            width: 100%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--ocean-blue);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header>
+        <div class="logo">OceanBites</div>
+        <button class="cart-btn" onclick="toggleCart()">
+            🛒 Cart (<span id="cart-count">0</span>)
+        </button>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Authentic Flavors, Delivered Fast</h1>
+        <p>Experience the finest Biryani, Mandi, Shawarma, and rich Indian Curries.</p>
+    </section>
+
+    <!-- Menu Section -->
+    <main class="menu-container">
+        <h2 class="menu-title">Our Classic Menu</h2>
+        
+        <div class="grid">
+            <!-- Item 1 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Hyderabadi Chicken Biryani">
+                <div class="card-content">
+                    <h3 class="card-title">Hyderabadi Chicken Biryani</h3>
+                    <p class="card-desc">Classic basmati rice slow-cooked with marinated chicken and authentic Indian spices.</p>
+                    <p class="card-price">$14.99</p>
+                    <button class="add-to-cart" onclick="addToCart('Hyderabadi Chicken Biryani', 14.99)">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Classic Chicken Shawarma">
+                <div class="card-content">
+                    <h3 class="card-title">Classic Chicken Shawarma</h3>
+                    <p class="card-desc">Roasted chicken wraps with garlic mayo, pickles, and fresh fries inside a soft pita.</p>
+                    <p class="card-price">$8.99</p>
+                    <button class="add-to-cart" onclick="addToCart('Chicken Shawarma', 8.99)">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Mutton Mandi">
+                <div class="card-content">
+                    <h3 class="card-title">Traditional Mutton Mandi</h3>
+                    <p class="card-desc">Tender mutton slow-roasted to perfection, served over smoky, spiced aromatic rice.</p>
+                    <p class="card-price">$18.99</p>
+                    <button class="add-to-cart" onclick="addToCart('Mutton Mandi', 18.99)">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Butter Chicken Curry">
+                <div class="card-content">
+                    <h3 class="card-title">Butter Chicken Curry</h3>
+                    <p class="card-desc">Rich, creamy tomato gravy with boneless chicken pieces. Best paired with garlic naan.</p>
+                    <p class="card-price">$13.99</p>
+                    <button class="add-to-cart" onclick="addToCart('Butter Chicken Curry', 13.99)">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Spicy Mutton Curry">
+                <div class="card-content">
+                    <h3 class="card-title">Spicy Mutton Curry (Non-Veg)</h3>
+                    <p class="card-desc">A fiery and aromatic Indian curry cooked with bone-in mutton and regional spices.</p>
+                    <p class="card-price">$16.50</p>
+                    <button class="add-to-cart" onclick="addToCart('Spicy Mutton Curry', 16.50)">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Mixed Non-Veg Platter">
+                <div class="card-content">
+                    <h3 class="card-title">Ultimate Non-Veg Platter</h3>
+                    <p class="card-desc">A massive assortment of Tandoori chicken, seekh kebabs, and grilled fish.</p>
+                    <p class="card-price">$24.99</p>
+                    <button class="add-to-cart" onclick="addToCart('Non-Veg Platter', 24.99)">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Your Order</h3>
+            <button class="close-cart" onclick="toggleCart()">✖</button>
+        </div>
+        <div class="cart-items" id="cartItemsContainer">
+            <!-- Items will be injected here by JS -->
+            <p style="color: #666; text-align: center; margin-top: 2rem;">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotalValue">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 OceanBites Food Delivery. All Rights Reserved.</p>
+    </footer>
+
+    <!-- --- JAVASCRIPT --- -->
+    <script>
+        // Shopping Cart Array
+        let cart = [];
+
+        // Add Item to Cart
+        function addToCart(itemName, itemPrice) {
+            cart.push({ name: itemName, price: itemPrice });
+            updateCartUI();
+            
+            // Optional: Auto-open cart when item is added
+            const sidebar = document.getElementById('cartSidebar');
+            if (!sidebar.classList.contains('open')) {
+                toggleCart();
+            }
+        }
+
+        // Remove Item from Cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        // Update Cart Interface
+        function updateCartUI() {
+            const container = document.getElementById('cartItemsContainer');
+            const countSpan = document.getElementById('cart-count');
+            const totalSpan = document.getElementById('cartTotalValue');
+            
+            // Update Header Count
+            countSpan.innerText = cart.length;
+
+            // Update Items List
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center; margin-top: 2rem;">Your cart is empty.</p>';
+                totalSpan.innerText = '$0.00';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                html += `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <span style="color: #006994;">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <button onclick="removeFromCart(${index})" style="background:none; border:none; color:red; cursor:pointer;">Remove</button>
+                    </div>
+                `;
+                total += item.price;
+            });
+
+            container.innerHTML = html;
+            totalSpan.innerText = '$' + total.toFixed(2);
+        }
+
+        // Open/Close Cart Sidebar
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Mock Checkout Function
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty! Add some delicious food first.");
+                return;
+            }
+            alert("Thank you for your order! Your delicious meal is being prepared.");
+            cart = []; // Empty cart after checkout
+            updateCartUI();
+            toggleCart(); // Close sidebar
+        }
+    </script>
+</body>
+</html>
