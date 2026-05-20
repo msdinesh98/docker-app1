@@ -1,1 +1,4 @@
-# docker-app1
+# sample web applications for
+travel booking
+food devilery
+grocery delivery
